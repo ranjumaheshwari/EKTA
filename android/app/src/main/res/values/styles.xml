@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bhasha Setu</string>
+    <string name="accessibility_service_description">Bhasha Setu needs this permission to read screen text for translation.</string>
+</resources>

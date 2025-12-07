@@ -90,7 +90,7 @@ class _PermissionsScreenState extends State<PermissionsScreen>
                   color: AppColors.trust.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(LucideIcons.shield,
+                child: Icon(LucideIcons.shield,
                     size: 48, color: AppColors.trust),
               ),
               const SizedBox(height: 24),

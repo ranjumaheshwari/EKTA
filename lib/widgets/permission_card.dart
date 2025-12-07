@@ -82,12 +82,12 @@ class PermissionCard extends StatelessWidget {
                       child: const Text("Enable"),
                     )
                   else
-                    const Row(
+                    Row(
                       children: [
-                        Icon(LucideIcons.check,
+                        const Icon(LucideIcons.check,
                             size: 16, color: AppColors.success),
                         SizedBox(width: 4),
-                        Text(
+                        const Text(
                           "Enabled",
                           style: TextStyle(
                             color: AppColors.success,

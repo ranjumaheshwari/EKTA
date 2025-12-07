@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
+import 'package:google_generative_ai/google_generative_ai.dart' as genai;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' show Platform;
 
 // import 'data/app_data.dart'; // unused - removed to silence analyzer
 import 'models/language.dart';
@@ -16,7 +19,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize overlay window
-  await FlutterOverlayWindow.requestPermission();
+  if (!kIsWeb && Platform.isAndroid) {
+    await FlutterOverlayWindow.requestPermission();
+  }
+
+  const String geminiKey = String.fromEnvironment('GEMINI_API_KEY');
+  if (geminiKey.isNotEmpty) {
+    genai.GenerativeModel(model: 'gemini-1.5-flash', apiKey: geminiKey);
+  }
 
   runApp(const BhashaSetuApp());
 }
@@ -82,7 +92,7 @@ class _OnboardingOrchestratorState extends State<OnboardingOrchestrator> {
           onNext: () => setState(() => step = 4),
         );
       case 4:
-        return const Scaffold(
+        return Scaffold(
           body: HomeScreen(language: selectedLanguage!),
         );
       default:

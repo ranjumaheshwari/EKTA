@@ -7,6 +7,9 @@ import 'package:bhasha_setu/compat/flutter_overlay_window.dart'
         OverlayFlag,
         OverlayAlignment;
 import 'package:bhasha_setu/compat/lucide_icons.dart';
+import 'dart:async';
+import 'package:flutter_accessibility_service/flutter_accessibility_service.dart'
+    as fas;
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../models/language.dart';
@@ -22,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isActive = false;
+  StreamSubscription? _accSub;
 
   @override
   void initState() {
@@ -81,12 +85,35 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() => isActive = true);
       }
 
+      _startListening();
+
       Fluttertoast.showToast(
         msg: "Translation Active",
         backgroundColor: AppColors.success,
         textColor: Colors.white,
       );
     }
+  }
+
+  void _startListening() {
+    _accSub?.cancel();
+    _accSub = fas.FlutterAccessibilityService.accessStream.listen((event) async {
+      try {
+        final e = event as dynamic;
+        final String text = ((e.capturedText as String?) ?? '') +
+            '\n' +
+            (((e.nodesText as List<String>?)?.join('\n')) ?? '');
+        final normalized = text.trim();
+        if (normalized.isEmpty) return;
+        await FlutterOverlayWindow.shareData(normalized);
+      } catch (_) {}
+    });
+  }
+
+  @override
+  void dispose() {
+    _accSub?.cancel();
+    super.dispose();
   }
 
   @override

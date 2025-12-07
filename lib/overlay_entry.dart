@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
-import 'package:lucide_flutter/lucide_flutter.dart';
+import 'package:bhasha_setu/compat/lucide_icons.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'theme/colors.dart';
 
 // This function must be top-level for the overlay window
@@ -28,7 +30,41 @@ class _OverlayWidgetState extends State<OverlayWidget> {
   @override
   void initState() {
     super.initState();
-    // Register for messages from main app if needed
+    FlutterOverlayWindow.overlayListener.listen((event) async {
+      if (event is String && event.trim().isNotEmpty) {
+        setState(() {
+          isLoading = true;
+        });
+
+        final prefs = await SharedPreferences.getInstance();
+        final targetNative = prefs.getString('target_language_native') ?? 'Hindi';
+        const apiKey = String.fromEnvironment('GEMINI_API_KEY');
+
+        if (apiKey.isEmpty) {
+          setState(() {
+            detectedText = event;
+            isLoading = false;
+          });
+          return;
+        }
+
+        final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+        final prompt = "Translate the following text into $targetNative: '$event'. Return only the translated text.";
+        try {
+          final response = await model.generateContent([Content.text(prompt)]);
+          final translated = response.text?.trim();
+          setState(() {
+            detectedText = translated?.isNotEmpty == true ? translated! : event;
+            isLoading = false;
+          });
+        } catch (_) {
+          setState(() {
+            detectedText = event;
+            isLoading = false;
+          });
+        }
+      }
+    });
   }
 
   @override
@@ -45,7 +81,7 @@ class _OverlayWidgetState extends State<OverlayWidget> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 20,
                       spreadRadius: 2,
                     )
@@ -117,13 +153,15 @@ class _OverlayWidgetState extends State<OverlayWidget> {
                                   border: Border.all(color: AppColors.border),
                                 ),
                                 child: SingleChildScrollView(
-                                  child: Text(
-                                    detectedText,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      height: 1.4,
-                                    ),
-                                  ),
+                                  child: isLoading
+                                      ? const Center(child: CircularProgressIndicator())
+                                      : Text(
+                                          detectedText,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            height: 1.4,
+                                          ),
+                                        ),
                                 ),
                               ),
                             ),
@@ -136,8 +174,7 @@ class _OverlayWidgetState extends State<OverlayWidget> {
                                     onPressed: () {
                                       // Copy to clipboard
                                     },
-                                    icon:
-                                        const Icon(LucideIcons.copy, size: 16),
+                                    icon: const Icon(Icons.copy, size: 16),
                                     label: const Text("Copy"),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColors.primary,
@@ -154,8 +191,7 @@ class _OverlayWidgetState extends State<OverlayWidget> {
                                     onPressed: () {
                                       // Speak text
                                     },
-                                    icon: const Icon(LucideIcons.volume2,
-                                        size: 16),
+                                    icon: const Icon(Icons.volume_up, size: 16),
                                     label: const Text("Speak"),
                                     style: OutlinedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
@@ -192,7 +228,7 @@ class _OverlayWidgetState extends State<OverlayWidget> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.5),
+                        color: AppColors.primary.withValues(alpha: 0.5),
                         blurRadius: 12,
                         offset: const Offset(0, 4),
                       )

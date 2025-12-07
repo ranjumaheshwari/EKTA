@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/app_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/language.dart';
 import '../theme/colors.dart';
 import '../widgets/custom_button.dart';
@@ -88,7 +89,15 @@ class _LanguageScreenState extends State<LanguageScreen> {
               const SizedBox(height: 16),
               CustomButton(
                 text: "Continue",
-                onPressed: selected != null ? () => widget.onLanguageSelected(selected!) : () {},
+                onPressed: selected != null
+                    ? () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setString('target_language_code', selected!.code);
+                        await prefs.setString('target_language_name', selected!.name);
+                        await prefs.setString('target_language_native', selected!.nativeName);
+                        widget.onLanguageSelected(selected!);
+                      }
+                    : () {},
                 color: selected != null ? AppColors.primary : AppColors.muted,
               ),
             ],

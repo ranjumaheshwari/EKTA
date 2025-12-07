@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bhasha_setu/compat/flutter_overlay_window.dart';
-import 'package:bhasha_setu/compat/lucide_icons.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
+import 'package:lucide_flutter/lucide_flutter.dart';
 import 'theme/colors.dart';
 
 // This function must be top-level for the overlay window

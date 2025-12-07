@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:bhasha_setu/compat/flutter_overlay_window.dart'
     show
         FlutterOverlayWindow,
@@ -5,10 +6,9 @@ import 'package:bhasha_setu/compat/flutter_overlay_window.dart'
         NotificationVisibility,
         OverlayFlag,
         OverlayAlignment;
-import 'package:flutter/material.dart';
 import 'package:bhasha_setu/compat/lucide_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:bhasha_setu/compat/flutter_overlay_window.dart';
+
 import '../models/language.dart';
 import '../theme/colors.dart';
 

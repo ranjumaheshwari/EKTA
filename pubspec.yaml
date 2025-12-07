@@ -22,7 +22,9 @@ dependencies:
 
   # Added packages used across the app
   animate_do: ^2.0.1
-  # flutter_overlay_window replaced by local compat shim
+  flutter_overlay_window: ^0.4.4
+  lucide_flutter:
+  accessibility_service:
   # lucide_icons replaced by local compat shim
 
   # SIMPLE VERSION - No complex packages for now

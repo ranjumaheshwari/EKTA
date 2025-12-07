@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:bhasha_setu/compat/flutter_overlay_window.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
 // import 'data/app_data.dart'; // unused - removed to silence analyzer
 import 'models/language.dart';
@@ -82,7 +82,9 @@ class _OnboardingOrchestratorState extends State<OnboardingOrchestrator> {
           onNext: () => setState(() => step = 4),
         );
       case 4:
-        return HomeScreen(language: selectedLanguage!);
+        return const Scaffold(
+          body: HomeScreen(language: selectedLanguage!),
+        );
       default:
         return const Scaffold(
           body: Center(child: Text('Something went wrong')),
@@ -121,7 +123,7 @@ class SimpleOnboardingView extends StatelessWidget {
                 height: 200,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primary.withValues(alpha:0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1),
                 ),
                 child: const Center(
                   child: Icon(
